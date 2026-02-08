@@ -1,9 +1,4 @@
-/*
- * Name: Eynar
- * Project: Random Number Generator + Descriptive Statistics
- * Class: Object Oriented Analysis and Design (OOAD)
- * Date: 2026-02-08
- *
+
  * Description:
  * Generates random doubles in [0, 1) using three built-in Java RNG approaches:
  * 1) java.util.Random
