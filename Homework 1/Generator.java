@@ -1,12 +1,11 @@
 
- * Description:
- * Generates random doubles in [0, 1) using three built-in Java RNG approaches:
- * 1) java.util.Random
- * 2) Math.random()
- * 3) java.util.concurrent.ThreadLocalRandom
- *
- * Then computes descriptive statistics: n, mean, sample stddev, min, max.
- */
+ //Description:
+ //Generates random doubles in [0, 1) using three built-in Java RNG approaches:
+ // 1) java.util.Random
+ // 2) Math.random()
+ // 3) java.util.concurrent.ThreadLocalRandom
+ 
+ // Then computes descriptive statistics: n, mean, sample stddev, min, max.
 
 import java.util.ArrayList;
 import java.util.Random;
