@@ -1,1 +1,191 @@
+/*
+ * Name: Eynar
+ * Project: Random Number Generator + Descriptive Statistics
+ * Class: Object Oriented Analysis and Design (OOAD)
+ * Date: 2026-02-08
+ *
+ * Description:
+ * Generates random doubles in [0, 1) using three built-in Java RNG approaches:
+ * 1) java.util.Random
+ * 2) Math.random()
+ * 3) java.util.concurrent.ThreadLocalRandom
+ *
+ * Then computes descriptive statistics: n, mean, sample stddev, min, max.
+ */
+
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class Generator { // <-- EXAMPLE: A class definition
+
+    // ==========================
+    // EXAMPLE: A class attribute
+    // ==========================
+    // Accessibility example: "private" means only this class can access it.
+    private final Random rng = new Random(); // <-- Object instantiation + class attribute (java.util.Random)
+
+    // Constants for choosing RNG type (makes code readable)
+    private static final int RNG_UTIL_RANDOM = 0;
+    private static final int RNG_MATH_RANDOM = 1;
+    private static final int RNG_THREAD_LOCAL = 2;
+
+    /**
+     * populate
+     * Creates and returns an ArrayList of n random doubles in [0,1)
+     * using one of the three RNG methods.
+     *
+     * @param n sample size
+     * @param randNumGen RNG selector (0=Random, 1=Math.random, 2=ThreadLocalRandom)
+     * @return ArrayList<Double> of size n
+     */
+    public ArrayList<Double> populate(int n, int randNumGen) { // <-- EXAMPLE: A method definition
+        ArrayList<Double> values = new ArrayList<>(n); // <-- Object instantiation
+
+        for (int i = 0; i < n; i++) {
+            double x;
+
+            if (randNumGen == RNG_UTIL_RANDOM) {
+                // java.util.Random
+                x = rng.nextDouble();
+            } else if (randNumGen == RNG_MATH_RANDOM) {
+                // Math.random()
+                x = Math.random();
+            } else if (randNumGen == RNG_THREAD_LOCAL) {
+                // ThreadLocalRandom
+                x = ThreadLocalRandom.current().nextDouble(0.0, 1.0);
+            } else {
+                // If invalid selector is provided, default to Math.random()
+                x = Math.random();
+            }
+
+            values.add(x);
+        }
+
+        return values;
+    }
+
+    /**
+     * statistics
+     * Computes and returns: [n, mean, sample stddev, min, max]
+     *
+     * Note:
+     * - "sample standard deviation" uses (n-1) in denominator.
+     *
+     * @param randomValues list of generated values
+     * @return results list in order: [n, mean, stddev, min, max]
+     */
+    public ArrayList<Double> statistics(ArrayList<Double> randomValues) {
+        int n = randomValues.size();
+
+        double sum = 0.0;
+        double min = Double.POSITIVE_INFINITY;
+        double max = Double.NEGATIVE_INFINITY;
+
+        for (double v : randomValues) {
+            sum += v;
+            if (v < min) min = v;
+            if (v > max) max = v;
+        }
+
+        double mean = sum / n;
+
+        // Sample standard deviation:
+        // sqrt( sum((xi - mean)^2) / (n - 1) )
+        double sqSum = 0.0;
+        for (double v : randomValues) {
+            double diff = v - mean;
+            sqSum += diff * diff;
+        }
+
+        double stddev;
+        if (n > 1) {
+            stddev = Math.sqrt(sqSum / (n - 1));
+        } else {
+            // Sample stddev undefined for n=1; we can return 0.0 to avoid crash.
+            stddev = 0.0;
+        }
+
+        ArrayList<Double> results = new ArrayList<>(5);
+        results.add((double) n);
+        results.add(mean);
+        results.add(stddev);
+        results.add(min);
+        results.add(max);
+
+        return results;
+    }
+
+    /**
+     * display
+     * Displays results in a tabular format, optionally printing a header.
+     *
+     * @param results [n, mean, stddev, min, max]
+     * @param headerOn whether to print header
+     */
+    public void display(ArrayList<Double> results, boolean headerOn) {
+        if (headerOn) {
+            System.out.printf("%-8s %-12s %-12s %-12s %-12s%n",
+                    "n", "mean", "stddev", "min", "max");
+            System.out.println("---------------------------------------------------------------");
+        }
+
+        // Format: n as integer, other stats as decimals
+        System.out.printf("%-8d %-12.6f %-12.6f %-12.6f %-12.6f%n",
+                results.get(0).intValue(),
+                results.get(1),
+                results.get(2),
+                results.get(3),
+                results.get(4));
+    }
+
+    /**
+     * execute
+     * Runs populate -> statistics -> display for all combinations
+     * of n values and RNG methods (3 x 3 = 9 rows).
+     */
+    public void execute() {
+        // Choose 3 n values (you can change them, still must produce 9 results)
+        int[] nValues = {10, 1000, 100000};
+
+        // RNG options
+        int[] rngOptions = {RNG_UTIL_RANDOM, RNG_MATH_RANDOM, RNG_THREAD_LOCAL};
+        String[] rngNames = {"java.util.Random", "Math.random()", "ThreadLocalRandom"};
+
+        boolean headerPrinted = false;
+
+        for (int n : nValues) {
+            for (int i = 0; i < rngOptions.length; i++) {
+                int rngChoice = rngOptions[i];
+
+                ArrayList<Double> data = populate(n, rngChoice);
+                ArrayList<Double> stats = statistics(data);
+
+                // Print a section label per RNG run (nice for grading clarity)
+                System.out.println();
+                System.out.println("RNG = " + rngNames[i] + " | n = " + n);
+
+                display(stats, !headerPrinted);
+                headerPrinted = true;
+            }
+        }
+
+        System.out.println("\nExpected trends:");
+        System.out.println("- min approaches 0, max approaches 1");
+        System.out.println("- mean approaches 0.5");
+        System.out.println("- sample stddev approaches ~0.288675 (approx 0.29 for Uniform[0,1))");
+    }
+
+    // ==========================
+    // Accessibility examples:
+    // - public class Generator
+    // - private attribute rng
+    // - public methods populate/statistics/display/execute
+    // ==========================
+
+    public static void main(String[] args) {
+        Generator g = new Generator(); // <-- Object instantiation example
+        g.execute();
+    }
+}
 
