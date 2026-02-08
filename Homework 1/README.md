@@ -65,9 +65,11 @@ Small deviations are expected for small sample sizes.
 ---
 
 ## How to Compile and Run
+
 ### Compile
-```bash
 javac Generator.java
 
+### Run
 java Generator
+
 
