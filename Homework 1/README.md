@@ -50,10 +50,8 @@ Since the values are uniformly distributed in **[0, 1)**, as **n increases**:
 - **min** should approach **0**
 - **max** should approach **1**
 - **mean** should approach **0.5**
-- **sample standard deviation** should approach  
-  \[
-  \sqrt{\frac{1}{12}} \approx 0.288675 \ (\approx 0.29)
-  \]
+- **sample standard deviation** should approach approximately 0.288675 (≈ 0.29)
+
 
 Small deviations are expected for small sample sizes.
 
